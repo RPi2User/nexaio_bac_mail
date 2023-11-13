@@ -66,7 +66,10 @@ function BackupNCAIO(){
     # https://github.com/nextcloud/all-in-one#how-to-stopstartupdate-containers-or-trigger-the-daily-backup-from-a-script-externally
     # Describes Scripting of the Backup-Solution
     echo "Starting NC-AIO Backup:" >> mail.tmp
-    docker exec -it --env DAILY_BACKUP=1 --env START_CONTAINERS=1 nextcloud-aio-mastercontainer /daily-backup.sh >> mail.tmp
+    docker exec -it --env DAILY_BACKUP=1 nextcloud-aio-mastercontainer /daily-backup.sh >> mail.tmp
+    echo "" >> mail.tmp
+    echo "End: $(uptime)" >> mail.tmp
+    echo "" >> mail.tmp
     Seperator
     echo "" >> mail.tmp
 }
@@ -75,8 +78,12 @@ function UpdateNC(){
     # Update NC-AIO
     echo "Updating NC-AIO" >> mail.tmp
     docker exec -it --env AUTOMATIC_UPDATES=1  nextcloud-aio-mastercontainer /daily-backup.sh >> mail.tmp
-
+    echo "" >> mail.tmp
+    echo "End: $(uptime)" >> mail.tmp
+    echo "" >> mail.tmp
+    
 }
+
 function CheckUpdates(){
 	echo "Systemaktualisierungen:" >> mail.tmp
 	apt update &>/dev/null
