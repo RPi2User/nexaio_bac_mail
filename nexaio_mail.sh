@@ -13,7 +13,7 @@ hostname=$(hostname)
 
 function Main(){
 	ClearTemp
-	BackupNC
+    BackupNCAIO
 	CheckUpdates
 	Send
 }
@@ -47,7 +47,7 @@ function BackupNC(){
 	echo "   Speicherplatz:" >> mail.tmp
 	df -h | grep --color=never /mnt/backup >> mail.tmp
 	echo "   Nextcloud stoppen..." >> mail.tmp
-#	nextcloud.occ maintenance:mode --on >> mail.tmp
+ #	nextcloud.occ maintenance:mode --on >> mail.tmp
 	ThinSeparator
 	tar cf /mnt/backup/$backupFile /var/snap/nextcloud/common/nextcloud/data 2>/dev/null
 	if [ "$exit_code" = "" ]
@@ -57,8 +57,25 @@ function BackupNC(){
 	echo "Ende: $(date +%Y.%m.%d_%H:%M:%S)" >> mail.tmp
 	umount /mnt/backup
 	echo "Gebe Nextcloud wieder frei" >> mail.tmp
-#	nextcloud.occ maintenance:mode --off >> mail.tmp
+ #	nextcloud.occ maintenance:mode --off >> mail.tmp
 	Seperator
+}
+
+function BackupNCAIO(){
+    # NC-AIO uses BorgBackup as a AIO Backup-Solution
+    # https://github.com/nextcloud/all-in-one#how-to-stopstartupdate-containers-or-trigger-the-daily-backup-from-a-script-externally
+    # Describes Scripting of the Backup-Solution
+    echo "Starting NC-AIO Backup:" >> mail.tmp
+    docker exec -it --env DAILY_BACKUP=1 --env START_CONTAINERS=1 nextcloud-aio-mastercontainer /daily-backup.sh >> mail.tmp
+    Seperator
+    echo "" >> mail.tmp
+}
+
+function UpdateNC(){
+    # Update NC-AIO
+    echo "Updating NC-AIO" >> mail.tmp
+    docker exec -it --env AUTOMATIC_UPDATES=1  nextcloud-aio-mastercontainer /daily-backup.sh >> mail.tmp
+
 }
 function CheckUpdates(){
 	echo "Systemaktualisierungen:" >> mail.tmp
@@ -66,8 +83,7 @@ function CheckUpdates(){
 	echo "APT:" >> mail.tmp
 	apt list --upgradeable -qq >> mail.tmp
 	ThinSeparator >> mail.tmp
-	echo "SNAP:" >> mail.tmp
-	snap refresh 2>> mail.tmp
+    UpdateNC
 	Seperator >> mail.tmp
 }
 function Send(){
