@@ -88,7 +88,7 @@ function CheckUpdates(){
 	echo "Systemaktualisierungen:" >> mail.tmp
 	apt update &>/dev/null
 	echo "APT:" >> mail.tmp
-	apt list --upgradeable -qq >> mail.tmp
+	apt list --upgradeable -qq 1> mail.tmp 2>/dev/null
 	ThinSeparator >> mail.tmp
     UpdateNC
 	Seperator >> mail.tmp
