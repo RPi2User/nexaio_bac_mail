@@ -79,7 +79,7 @@ function UpdateNC(){
     echo "Updating NC-AIO" >> /tmp/mail.tmp
     docker exec -i --env AUTOMATIC_UPDATES=1  nextcloud-aio-mastercontainer /daily-backup.sh >> /tmp/mail.tmp
     echo "" >> /tmp/mail.tmp
-    echo "End: $(uptime)" >> /tmp/mail.tmp
+    echo "End: $(w)" >> /tmp/mail.tmp
     echo "" >> /tmp/mail.tmp
     
 }
