@@ -9,6 +9,7 @@
 #
 ######################################################
 backupFile=""
+recipient="your@email-adress.com"
 hostname=$(hostname)
 
 function Main(){
@@ -94,7 +95,7 @@ function CheckUpdates(){
 	Seperator >> /tmp/mail.tmp
 }
 function Send(){
-	cat /tmp/mail.tmp | mail -s "Systemübersicht Raspberry Pi vom $(date +%d.%m.%Y)" florian@hatzfeld.biz
+	cat /tmp/mail.tmp | mail -s "Systemübersicht Raspberry Pi vom $(date +%d.%m.%Y)" $recipient
 	rm /tmp/mail.tmp
 }
 Main
