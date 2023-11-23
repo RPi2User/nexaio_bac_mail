@@ -82,14 +82,13 @@ function UpdateNC(){
     echo "" >> /tmp/mail.tmp
     echo "End: $(w)" >> /tmp/mail.tmp
     echo "" >> /tmp/mail.tmp
-    
 }
 
 function CheckUpdates(){
 	echo "Systemaktualisierungen:" >> /tmp/mail.tmp
 	apt update &>/dev/null
 	echo "APT:" >> /tmp/mail.tmp
-	apt list --upgradeable -qq | nl 2>/dev/null 1>> /tmp/mail.tmp 
+	apt list --upgradeable -qq | nl 2>/dev/null 1>> /tmp/mail.tmp
 	ThinSeparator >> /tmp/mail.tmp
     UpdateNC
 	Seperator >> /tmp/mail.tmp
