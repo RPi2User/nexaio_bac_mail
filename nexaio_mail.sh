@@ -13,10 +13,10 @@ recipient="your@email-adress.com"
 hostname=$(hostname)
 
 function Main(){
-	ClearTemp
-    BackupNCAIO
-	CheckUpdates
-	Send
+	ClearTemp		#Clear Temp-File and create Header
+	BackupNCAIO		#Trigger Backup
+	CheckUpdates	#Check for Updates via apt and commit NC-AIO Updates
+	Send			#Send Mail via `mail` Command and current Settings
 }
 
 function ClearTemp(){
@@ -24,15 +24,19 @@ function ClearTemp(){
 	echo "Beginn: $(date +%Y.%m.%d_%H:%M:%S)" >> /tmp/mail.tmp
 	echo "Uptime: $(uptime)" >> /tmp/mail.tmp
 	echo "" >> /tmp/mail.tmp
+	ThinSeparator
+	echo "" >> /tmp/mail.tmp
+	free -h >> /tmp/mail.tmp
+	echo "" >> /tmp/mail.tmp
 	Seperator
 	echo "" >> /tmp/mail.tmp
 }
 
 function Seperator(){ #OK!
-    echo "==============================================" >> /tmp/mail.tmp
+	echo "==============================================" >> /tmp/mail.tmp
 }
 function ThinSeparator(){ #OK!
-    echo "----------------------------------------------" >> /tmp/mail.tmp
+	echo "----------------------------------------------" >> /tmp/mail.tmp
 }
 
 function BackupNC(){
@@ -63,25 +67,25 @@ function BackupNC(){
 }
 
 function BackupNCAIO(){
-    # NC-AIO uses BorgBackup as a AIO Backup-Solution
-    # https://github.com/nextcloud/all-in-one#how-to-stopstartupdate-containers-or-trigger-the-daily-backup-from-a-script-externally
-    # Describes Scripting of the Backup-Solution
-    echo "Starting NC-AIO Backup:" >> /tmp/mail.tmp
-    docker exec -i --env DAILY_BACKUP=1 --env START_CONTAINERS=1 nextcloud-aio-mastercontainer /daily-backup.sh >> /tmp/mail.tmp
-    echo "" >> /tmp/mail.tmp
-    echo "End: $(uptime)" >> /tmp/mail.tmp
-    echo "" >> /tmp/mail.tmp
-    Seperator
-    echo "" >> /tmp/mail.tmp
+	# NC-AIO uses BorgBackup as a AIO Backup-Solution
+	# https://github.com/nextcloud/all-in-one#how-to-stopstartupdate-containers-or-trigger-the-daily-backup-from-a-script-externally
+	# Describes Scripting of the Backup-Solution
+	echo "Starting NC-AIO Backup:" >> /tmp/mail.tmp
+	docker exec -i --env DAILY_BACKUP=1 --env START_CONTAINERS=1 nextcloud-aio-mastercontainer /daily-backup.sh >> /tmp/mail.tmp
+	echo "" >> /tmp/mail.tmp
+	echo "End: $(uptime)" >> /tmp/mail.tmp
+	echo "" >> /tmp/mail.tmp
+	Seperator
+	echo "" >> /tmp/mail.tmp
 }
 
 function UpdateNC(){
-    # Update NC-AIO
-    echo "Updating NC-AIO" >> /tmp/mail.tmp
-    docker exec -i --env AUTOMATIC_UPDATES=1  nextcloud-aio-mastercontainer /daily-backup.sh >> /tmp/mail.tmp
-    echo "" >> /tmp/mail.tmp
-    echo "End: $(w)" >> /tmp/mail.tmp
-    echo "" >> /tmp/mail.tmp
+	# Update NC-AIO
+	echo "Updating NC-AIO" >> /tmp/mail.tmp
+	docker exec -i --env AUTOMATIC_UPDATES=1  nextcloud-aio-mastercontainer /daily-backup.sh >> /tmp/mail.tmp
+	echo "" >> /tmp/mail.tmp
+	echo "End: $(w)" >> /tmp/mail.tmp
+	echo "" >> /tmp/mail.tmp
 }
 
 function CheckUpdates(){
@@ -89,8 +93,10 @@ function CheckUpdates(){
 	apt update &>/dev/null
 	echo "APT:" >> /tmp/mail.tmp
 	apt list --upgradeable -qq 2>/dev/null | nl 1>> /tmp/mail.tmp # nl to add Line Numbers
+	echo "" >> /tmp/mail.tmp
 	ThinSeparator >> /tmp/mail.tmp
-    UpdateNC
+	echo "" >> /tmp/mail.tmp
+	UpdateNC
 	Seperator >> /tmp/mail.tmp
 }
 function Send(){
